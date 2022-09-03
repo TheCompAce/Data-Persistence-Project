@@ -12,7 +12,10 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public GameObject GameOverText;
-    
+
+    public Text bestScoreText;
+
+
     private bool m_Started = false;
     private int m_Points;
     
@@ -60,16 +63,27 @@ public class MainManager : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
+
+        if (MenuManager.Instance != null)
+        {
+            bestScoreText.text = "Best Score : " + MenuManager.Instance.HighName + " : " + MenuManager.Instance.HighScore;
+        }
     }
 
     void AddPoint(int point)
     {
         m_Points += point;
+        if (m_Points > MenuManager.Instance.HighScore)
+        {
+            MenuManager.Instance.HighScore = m_Points;
+            MenuManager.Instance.HighName = MenuManager.Instance.lastName;
+        }
         ScoreText.text = $"Score : {m_Points}";
     }
 
     public void GameOver()
     {
+        MenuManager.Instance.SaveDataInfo();
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
